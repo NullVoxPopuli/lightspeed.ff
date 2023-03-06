@@ -26,16 +26,7 @@
     "chrome_style": false,
     "open_in_tab": true
   },
-  "permissions": [
-    "tabs",
-    "bookmarks",
-    "history",
-    "storage",
-    "sessions",
-    "notifications",
-    "webNavigation",
-    "<all_urls>"
-  ],
+  "permissions": [],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
