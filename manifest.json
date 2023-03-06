@@ -7,6 +7,11 @@
               "48": "icons/icon48.png",
              "128": "icons/icon128.png" },
   "minimum_chrome_version": "69.0",
+  "applications": {
+    "gecko": {
+      "id": "nvp-permissionless@vimium.net"
+    }
+  },
   "background": {
     "scripts": [
       "lib/utils.js",
@@ -26,7 +31,10 @@
     "chrome_style": false,
     "open_in_tab": true
   },
-  "permissions": [],
+  "permissions": [
+    "storage",
+    "webNavigation"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
