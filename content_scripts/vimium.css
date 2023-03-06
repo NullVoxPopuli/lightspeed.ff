@@ -79,19 +79,41 @@ div.internalVimiumHintMarker {
   white-space: nowrap;
   overflow: hidden;
   font-size: 11px;
-  padding: 1px 3px 0px 3px;
-  background: linear-gradient(to bottom, #FFF785 0%,#FFC542 100%);
-  border: solid 1px #C38A22;
-  border-radius: 3px;
-  box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.3);
+  padding: 2px 4px 2px 4px;
+  background: white; 
+  border-radius: 2px;
+  box-shadow: 0 0 0px 1px #fff, 0 1px 2px 2px #c0f, 0 2px 1px 2px #0af;
 }
 
+
+
 div.internalVimiumHintMarker span {
-  color: #302505;
-  font-family: Helvetica, Arial, sans-serif;
+  color: black;
+  font-family: "Source Code Pro", ui-monospace, monospace, sans-serif;
   font-weight: bold;
   font-size: 11px;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  text-transform: lowercase;
+}
+
+.dark div.internalVimiumHintMarker,
+.dark-mode div.internalVimiumHintMarker,
+.darkmode div.internalVimiumHintMarker,
+.theme-dark div.internalVimiumHintMarker,
+.dark-theme div.internalVimiumHintMarker,
+.darktheme div.internalVimiumHintMarker
+{
+  background: #222;
+  box-shadow: 0 0 0px 1px #111, 0 1px 2px 2px #c0f, 0 2px 1px 2px #0af;
+}
+
+.dark div.internalVimiumHintMarker span,
+.dark-mode div.internalVimiumHintMarker span,
+.darkmode div.internalVimiumHintMarker span,
+.theme-dark div.internalVimiumHintMarker span,
+.dark-theme div.internalVimiumHintMarker span,
+.darktheme div.internalVimiumHintMarker span
+{
+  color: white;
 }
 
 div.internalVimiumHintMarker > .matchingCharacter {
