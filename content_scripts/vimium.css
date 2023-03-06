@@ -79,7 +79,8 @@ div.internalVimiumHintMarker {
   white-space: nowrap;
   overflow: hidden;
   font-size: 11px;
-  padding: 2px 4px 2px 4px;
+  /* padding: 2px 4px 2px 4px; */
+  padding: 1px 2px 0px 2px;
   background: white; 
   border-radius: 2px;
   box-shadow: 0 0 0px 1px #fff, 0 1px 2px 2px #c0f, 0 2px 1px 2px #0af;
@@ -89,10 +90,11 @@ div.internalVimiumHintMarker {
 
 div.internalVimiumHintMarker span {
   color: black;
-  font-family: "Source Code Pro", ui-monospace, monospace, sans-serif;
+  /* font-family: "Source Code Pro", ui-monospace, monospace, sans-serif; */
   font-weight: bold;
+  /* font-size: 12px; */
   font-size: 11px;
-  text-transform: lowercase;
+  /* text-transform: lowercase; */
 }
 
 .dark div.internalVimiumHintMarker,
