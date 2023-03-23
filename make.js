@@ -11,6 +11,8 @@ import * as shoulda from "./tests/vendor/shoulda.js";
 
 const projectPath = new URL(".", import.meta.url).pathname;
 
+const PROJECT_NAME = 'vimium-lite';
+
 async function shell(procName, argsArray = []) {
   // NOTE(philc): Does drake's `sh` function work on Windows? If so, that can replace this function.
   if (Deno.build.os == "windows") {
@@ -41,28 +43,22 @@ async function buildStorePackage() {
   ];
   const fileContents = await Deno.readTextFile("./manifest.json");
   const manifestContents = JSON.parse(fileContents);
-  const rsyncOptions = ["-r", ".", "dist/vimium"].concat(
+  const rsyncOptions = ["-r", ".", `dist/${PROJECT_NAME}`].concat(
     ...excludeList.map((item) => ["--exclude", item])
   );
   const vimiumVersion = manifestContents["version"];
   const writeDistManifest = async (manifestObject) => {
-    await Deno.writeTextFile("dist/vimium/manifest.json", JSON.stringify(manifestObject, null, 2));
+    await Deno.writeTextFile(`dist/${PROJECT_NAME}/manifest.json`, JSON.stringify(manifestObject, null, 2));
   };
-  // cd into "dist/vimium" before building the zip, so that the files in the zip don't each have the
-  // path prefix "dist/vimium".
+  // cd into "dist/${PROJECT_NAME}" before building the zip, so that the files in the zip don't each have the
+  // path prefix "dist/${PROJECT_NAME}".
   // --filesync ensures that files in the archive which are no longer on disk are deleted. It's equivalent to
   // removing the zip file before the build.
-  const zipCommand = "cd dist/vimium && zip -r --filesync ";
+  const zipCommand = `cd dist/${PROJECT_NAME} && zip -r --filesync `;
 
-  await shell("rm", ["-rf", "dist/vimium"]);
-  await shell("mkdir", ["-p", "dist/vimium", "dist/chrome-canary", "dist/chrome-store", "dist/firefox"]);
+  await shell("rm", ["-rf", `dist/${PROJECT_NAME}`]);
+  await shell("mkdir", ["-p", `dist/${PROJECT_NAME}`, "dist/chrome-canary", "dist/chrome-store", "dist/firefox"]);
   await shell("rsync", rsyncOptions);
-
-  // Firefox needs clipboardRead and clipboardWrite for commands like "copyCurrentUrl", but Chrome does not.
-  // See #4186.
-  const firefoxPermissions = Array.from(manifestContents.permissions);
-  firefoxPermissions.push("clipboardRead");
-  firefoxPermissions.push("clipboardWrite");
 
   writeDistManifest(Object.assign({}, manifestContents, {
     // Chrome considers this key invalid in manifest.json, so we add it only during the Firefox build phase.
@@ -71,20 +67,19 @@ async function buildStorePackage() {
         strict_min_version: "62.0"
       },
     },
-    permissions: firefoxPermissions,
   }));
-  await shell("bash", ["-c", `${zipCommand} ../firefox/vimium-firefox-${vimiumVersion}.zip .`]);
+  await shell("bash", ["-c", `${zipCommand} ../firefox/${PROJECT_NAME}-firefox-${vimiumVersion}.zip .`]);
 
   // Build the Chrome Store package.
   writeDistManifest(manifestContents);
-  await shell("bash", ["-c", `${zipCommand} ../chrome-store/vimium-chrome-store-${vimiumVersion}.zip .`]);
+  await shell("bash", ["-c", `${zipCommand} ../chrome-store/${PROJECT_NAME}-chrome-store-${vimiumVersion}.zip .`]);
 
   // Build the Chrome Store dev package.
   writeDistManifest(Object.assign({}, manifestContents, {
     name: "Vimium Canary",
     description: "This is the development branch of Vimium (it is beta software).",
   }));
-  await shell("bash", ["-c", `${zipCommand} ../chrome-canary/vimium-canary-${vimiumVersion}.zip .`]);
+  await shell("bash", ["-c", `${zipCommand} ../chrome-canary/${PROJECT_NAME}-canary-${vimiumVersion}.zip .`]);
 }
 
 const runUnitTests = async () => {
