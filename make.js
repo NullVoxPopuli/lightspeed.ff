@@ -60,6 +60,9 @@ async function buildStorePackage() {
   await shell("mkdir", ["-p", `dist/${PROJECT_NAME}`, "dist/chrome-canary", "dist/chrome-store", "dist/firefox"]);
   await shell("rsync", rsyncOptions);
 
+  manifestContents.applications ??= {};
+  manifestContents.applications.gecko ??= {};
+  manifestContents.applications.gecko.id = '{7133995c-ca91-4349-979f-602eb72987e3}';
   writeDistManifest(manifestContents);
   await shell("bash", ["-c", `${zipCommand} ../firefox/${PROJECT_NAME}-firefox-${vimiumVersion}.zip .`]);
 

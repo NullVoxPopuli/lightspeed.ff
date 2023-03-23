@@ -1,4 +1,4 @@
-/*
+/**
  * Many CSS class names in this file use the verbose "vimiumXYZ" as the class name. This is so we don't
  * use the same CSS class names that the page is using, so the page's CSS doesn't mess with the style of our
  * Vimium dialogs.
@@ -8,7 +8,7 @@
  * that bound.  However, we must leave headroom for link hints.  Hint marker z-indexes start at 2140000001.
  */
 
-/*
+/**
  * This vimiumReset class can be added to any of our UI elements to give it a clean slate. This is useful in
  * case the page has declared a broad rule like "a { padding: 50px; }" which will mess up our UI. These
  * declarations contain more specifiers than necessary to increase their specificity (precedence).
@@ -69,7 +69,7 @@ tbody.vimiumReset {
   display: table-row-group;
 }
 
-/* Linkhints CSS */
+/** Linkhints CSS */
 
 div.internalVimiumHintMarker {
   position: absolute;

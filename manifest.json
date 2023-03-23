@@ -9,7 +9,7 @@
   "minimum_chrome_version": "69.0",
   "applications": {
     "gecko": {
-      "id": "nvp-permissionless@vimium.net"
+      "id": "nvp-permissionless@vimium.github"
     }
   },
   "background": {
@@ -19,9 +19,6 @@
       "background_scripts/bg_utils.js",
       "background_scripts/commands.js",
       "background_scripts/exclusions.js",
-      "background_scripts/completion_engines.js",
-      "background_scripts/completion_search.js",
-      "background_scripts/completion.js",
       "background_scripts/marks.js",
       "background_scripts/main.js"
     ]
@@ -32,8 +29,7 @@
     "open_in_tab": true
   },
   "permissions": [
-    "storage",
-    "webNavigation"
+    "storage"
   ],
   "content_scripts": [
     {
@@ -62,12 +58,6 @@
       "run_at": "document_start",
       "all_frames": true,
       "match_about_blank": true
-    },
-    {
-      "matches": ["file:///", "file:///*/"],
-      "css": ["content_scripts/file_urls.css"],
-      "run_at": "document_start",
-      "all_frames": true
     }
   ],
   "browser_action": {
@@ -77,7 +67,6 @@
   "web_accessible_resources": [
     "content_scripts/vimium.css",
     "pages/hud.html",
-    "pages/help_dialog.html",
-    "pages/completion_engines.html"
+    "pages/help_dialog.html"
   ]
 }

@@ -38,66 +38,6 @@ const randomArray = window.crypto.getRandomValues(new Uint8Array(32)); // 32-byt
 const secretToken =  randomArray.reduce((a,b) => a.toString(16) + b.toString(16));
 chrome.storage.local.set({vimiumSecret: secretToken});
 
-const completionSources = {
-  bookmarks: new BookmarkCompleter,
-  history: new HistoryCompleter,
-  domains: new DomainCompleter,
-  tabs: new TabCompleter,
-  searchEngines: new SearchEngineCompleter
-};
-
-const completers = {
-  omni: new MultiCompleter([
-    completionSources.bookmarks,
-    completionSources.history,
-    completionSources.domains,
-    completionSources.tabs,
-    completionSources.searchEngines
-    ]),
-  bookmarks: new MultiCompleter([completionSources.bookmarks]),
-  tabs: new MultiCompleter([completionSources.tabs])
-};
-
-const completionHandlers = {
-  filter(completer, request, port) {
-    // TODO(philc): Do we need any of these return statements?
-    return completer.filter(request, function(response) {
-      // NOTE(smblott): response contains `relevancyFunction` (function) properties which cause postMessage,
-      // below, to fail in Firefox. See #2576.  We cannot simply delete these methods, as they're needed
-      // elsewhere.  Converting the response to JSON and back is a quick and easy way to sanitize the object.
-      response = JSON.parse(JSON.stringify(response));
-      // We use try here because this may fail if the sender has already navigated away from the original page.
-      // This can happen, for example, when posting completion suggestions from the SearchEngineCompleter
-      // (which is done asynchronously).
-      try {
-        return port.postMessage(Object.assign(request, response, {handler: "completions"}));
-      } catch (error) {}
-    });
-  },
-
-  refresh(completer, _, port) { completer.refresh(port); },
-  cancel(completer, _, port) { completer.cancel(port); }
-};
-
-const handleCompletions = sender => (request, port) =>
-      completionHandlers[request.handler](completers[request.name], request, port);
-
-chrome.runtime.onConnect.addListener(function(port) {
-  if (portHandlers[port.name])
-    return port.onMessage.addListener(portHandlers[port.name](port.sender, port));
-});
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  request = Object.assign({count: 1, frameId: sender.frameId},
-                          request,
-                          {tab: sender.tab, tabId: sender.tab.id});
-  if (sendRequestHandlers[request.handler]) {
-    sendResponse(sendRequestHandlers[request.handler](request, sender));
-  }
-  // Ensure that the sendResponse callback is freed.
-  return false;
-});
-
 const onURLChange = details => chrome.tabs.sendMessage(details.tabId, {name: "checkEnabledAfterURLChange"});
 
 // Re-check whether Vimium is enabled for a frame when the url changes without a reload.
@@ -516,11 +456,6 @@ var Frames = {
   linkHintsMessage({request, tabId, frameId}) {
     HintCoordinator.onMessage(tabId, frameId, request);
   },
-
-  // For debugging only. This allows content scripts to log messages to the extension's logging page.
-  log({frameId, sender, request: {message}}) {
-    BgUtils.log(`${frameId} ${message}`, sender);
-  }
 };
 
 const handleFrameFocused = function({tabId, frameId}) {
@@ -624,7 +559,6 @@ var HintCoordinator = {
 
 // Port handler mapping
 var portHandlers = {
-  completions: handleCompletions,
   frames: Frames.onConnect.bind(Frames)
 };
 

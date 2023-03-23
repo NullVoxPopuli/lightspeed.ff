@@ -71,35 +71,6 @@ class TabRecency {
 var BgUtils = {
   tabRecency: new TabRecency(),
 
-  // Log messages to the extension's logging page, but only if that page is open.
-  log: (function() {
-    const loggingPageUrl = chrome.runtime.getURL("pages/logging.html");
-    if (loggingPageUrl != null) { console.log(`Vimium logging URL:\n  ${loggingPageUrl}`); } // Do not output URL for tests.
-    // For development, it's sometimes useful to automatically launch the logging page on reload.
-    if (localStorage.autoLaunchLoggingPage) { chrome.windows.create({url: loggingPageUrl, focused: false}); }
-    return function(message, sender = null) {
-      for (let viewWindow of chrome.extension.getViews({type: "tab"})) {
-        if (viewWindow.location.pathname === "/pages/logging.html") {
-          // Don't log messages from the logging page itself.  We do this check late because most of the time
-          // it's not needed.
-          if ((sender != null ? sender.url : undefined) !== loggingPageUrl) {
-            const date = new Date;
-            let [hours, minutes, seconds, milliseconds] =
-              [date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()];
-            if (minutes < 10) { minutes = "0" + minutes; }
-            if (seconds < 10) { seconds = "0" + seconds; }
-            if (milliseconds < 10) { milliseconds = "00" + milliseconds; }
-            if (milliseconds < 100) { milliseconds = "0" + milliseconds; }
-            const dateString = `${hours}:${minutes}:${seconds}.${milliseconds}`;
-            const logElement = viewWindow.document.getElementById("log-text");
-            logElement.value += `${dateString}: ${message}\n`;
-            logElement.scrollTop = 2000000000;
-          }
-        }
-      }
-    };
-  })(),
-
   // Remove comments and leading/trailing whitespace from a list of lines, and merge lines where the last
   // character on the preceding line is "\".
   parseLines(text) {
@@ -122,44 +93,6 @@ var BgUtils = {
   }
 };
 
-// Utility for parsing and using the custom search-engine configuration.  We re-use the previous parse if the
-// search-engine configuration is unchanged.
-const SearchEngines = {
-  previousSearchEngines: null,
-  searchEngines: null,
-
-  refresh(searchEngines) {
-    if ((this.previousSearchEngines == null) || (searchEngines !== this.previousSearchEngines)) {
-      this.previousSearchEngines = searchEngines;
-      this.searchEngines = new AsyncDataFetcher(function(callback) {
-        const engines = {};
-        for (let line of BgUtils.parseLines(searchEngines)) {
-          const tokens = line.split(/\s+/);
-          if (2 <= tokens.length) {
-            const keyword = tokens[0].split(":")[0];
-            const searchUrl = tokens[1];
-            const description = tokens.slice(2).join(" ") || `search (${keyword})`;
-            if (Utils.hasFullUrlPrefix(searchUrl) || Utils.hasJavascriptPrefix(searchUrl))
-              engines[keyword] = {keyword, searchUrl, description};
-          }
-        }
-
-        callback(engines);
-      });
-    }
-  },
-
-  // Use the parsed search-engine configuration, possibly asynchronously.
-  use(callback) { this.searchEngines.use(callback); },
-
-  // Both set (refresh) the search-engine configuration and use it at the same time.
-  refreshAndUse(searchEngines, callback) {
-    this.refresh(searchEngines);
-    this.use(callback);
-  }
-};
-
 BgUtils.TIME_DELTA = TIME_DELTA; // Referenced by our tests.
 
-window.SearchEngines = SearchEngines;
 window.BgUtils = BgUtils;
