@@ -412,26 +412,6 @@ body.vimiumFindMode ::selection {
   background: #ff9632;
 }
 
-/* Vomnibar Frame CSS */
-
-iframe.vomnibarFrame {
-  background-color: transparent;
-  padding: 0px;
-  overflow: hidden;
-
-  display: block;
-  position: fixed;
-  width: calc(80% + 20px); /* same adjustment as in pages/vomnibar.js */
-  min-width: 400px;
-  height: calc(100% - 70px);
-  top: 70px;
-  left: 50%;
-  margin: 0 0 0 -40%;
-  border: none;
-  font-family: sans-serif;
-  z-index: 2139999998; /* Two less than the reference value. */
-}
-
 div.vimiumFlash {
   box-shadow: 0px 0px 4px 2px #4183C4;
   padding: 1px;

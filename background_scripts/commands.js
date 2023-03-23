@@ -219,14 +219,6 @@ const Commands = {
       "mainFrame",
       "Marks.activateCreateMode",
       "Marks.activateGotoMode"],
-    vomnibarCommands:
-      ["Vomnibar.activate",
-      "Vomnibar.activateInNewTab",
-      "Vomnibar.activateBookmarks",
-      "Vomnibar.activateBookmarksInNewTab",
-      "Vomnibar.activateTabSelection",
-      "Vomnibar.activateEditUrl",
-      "Vomnibar.activateEditUrlInNewTab"],
     findCommands: ["enterFindMode", "performFind", "performBackwardsFind"],
     historyNavigation:
       ["goBack", "goForward"],
@@ -263,8 +255,6 @@ const Commands = {
     "goToRoot",
     "LinkHints.activateModeWithQueue",
     "LinkHints.activateModeToDownloadLink",
-    "Vomnibar.activateEditUrl",
-    "Vomnibar.activateEditUrlInNewTab",
     "LinkHints.activateModeToOpenIncognito",
     "LinkHints.activateModeToCopyLinkUrl",
     "goNext",
@@ -320,15 +310,6 @@ const defaultKeyMappings = {
   "/": "enterFindMode",
   "n": "performFind",
   "N": "performBackwardsFind",
-
-  // Vomnibar
-  "o": "Vomnibar.activate",
-  "O": "Vomnibar.activateInNewTab",
-  "T": "Vomnibar.activateTabSelection",
-  "b": "Vomnibar.activateBookmarks",
-  "B": "Vomnibar.activateBookmarksInNewTab",
-  "ge": "Vomnibar.activateEditUrl",
-  "gE": "Vomnibar.activateEditUrlInNewTab",
 
   // Navigating history
   "H": "goBack",
