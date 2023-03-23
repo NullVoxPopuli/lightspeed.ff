@@ -306,37 +306,6 @@ const defaultKeyMappings = {
   "<a-f>": "LinkHints.activateModeWithQueue",
   "yf": "LinkHints.activateModeToCopyLinkUrl",
 
-  // Using find
-  "/": "enterFindMode",
-  "n": "performFind",
-  "N": "performBackwardsFind",
-
-  // Navigating history
-  "H": "goBack",
-  "L": "goForward",
-
-  // Manipulating tabs
-  "K": "nextTab",
-  "J": "previousTab",
-  "gt": "nextTab",
-  "gT": "previousTab",
-  "^": "visitPreviousTab",
-  "<<": "moveTabLeft",
-  ">>": "moveTabRight",
-  "g0": "firstTab",
-  "g$": "lastTab",
-  "W": "moveTabToNewWindow",
-  "t": "createTab",
-  "yt": "duplicateTab",
-  "x": "removeTab",
-  "X": "restoreTab",
-  "<a-p>": "togglePinTab",
-  "<a-m>": "toggleMuteTab",
-
-  // Marks
-  "m": "Marks.activateCreateMode",
-  "`": "Marks.activateGotoMode",
-
   // Misc
   "?": "showHelp",
   "gs": "toggleViewSource"
@@ -424,19 +393,8 @@ const commandDescriptions = {
   moveTabLeft: ["Move tab to the left", { background: true }],
   moveTabRight: ["Move tab to the right", { background: true }],
 
-  "Vomnibar.activate": ["Open URL, bookmark or history entry", { topFrame: true }],
-  "Vomnibar.activateInNewTab": ["Open URL, bookmark or history entry in a new tab", { topFrame: true }],
-  "Vomnibar.activateTabSelection": ["Search through your open tabs", { topFrame: true }],
-  "Vomnibar.activateBookmarks": ["Open a bookmark", { topFrame: true }],
-  "Vomnibar.activateBookmarksInNewTab": ["Open a bookmark in a new tab", { topFrame: true }],
-  "Vomnibar.activateEditUrl": ["Edit the current URL", { topFrame: true }],
-  "Vomnibar.activateEditUrlInNewTab": ["Edit the current URL and open in a new tab", { topFrame: true }],
-
   nextFrame: ["Select the next frame on the page", { background: true }],
   mainFrame: ["Select the page's main/top frame", { topFrame: true, noRepeat: true }],
-
-  "Marks.activateCreateMode": ["Create a new mark", { noRepeat: true }],
-  "Marks.activateGotoMode": ["Go to a mark", { noRepeat: true }]
 };
 
 Commands.init();

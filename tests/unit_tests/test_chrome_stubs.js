@@ -64,18 +64,6 @@ window.chrome = {
     query() { return true; }
   },
 
-  webNavigation: {
-    onHistoryStateUpdated: {
-      addListener() {}
-    },
-    onReferenceFragmentUpdated: {
-      addListener() {}
-    },
-    onCommitted: {
-      addListener() {}
-    }
-  },
-
   windows: {
     onRemoved: {
       addListener() { return true; }

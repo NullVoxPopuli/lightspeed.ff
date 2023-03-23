@@ -3,13 +3,8 @@ import "../../background_scripts/bg_utils.js";
 import "../../lib/settings.js";
 import "../../lib/keyboard_utils.js";
 import "../../background_scripts/commands.js";
-import "../../content_scripts/mode.js";
-import "../../content_scripts/mode_key_handler.js";
-// Include mode_normal to check that all commands have been implemented.
-import "../../content_scripts/mode_normal.js";
 import "../../content_scripts/link_hints.js";
 import "../../content_scripts/marks.js";
-import "../../content_scripts/vomnibar.js";
 
 context("Key mappings", () => {
   const testKeySequence = (key, expectedKeyText, expectedKeyLength) => {

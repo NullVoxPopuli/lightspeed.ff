@@ -40,10 +40,6 @@ chrome.storage.local.set({vimiumSecret: secretToken});
 
 const onURLChange = details => chrome.tabs.sendMessage(details.tabId, {name: "checkEnabledAfterURLChange"});
 
-// Re-check whether Vimium is enabled for a frame when the url changes without a reload.
-chrome.webNavigation.onHistoryStateUpdated.addListener(onURLChange); // history.pushState.
-chrome.webNavigation.onReferenceFragmentUpdated.addListener(onURLChange); // Hash changed.
-
 // Cache "content_scripts/vimium.css" in chrome.storage.local for UI components.
 (function() {
   const req = new XMLHttpRequest();
@@ -333,15 +329,6 @@ var selectTab = (direction, {count, tab}) => chrome.tabs.query({ currentWindow: 
       } })();
     chrome.tabs.update(tabs[toSelect].id, {active: true});
   }
-});
-
-chrome.webNavigation.onCommitted.addListener(function({tabId, frameId}) {
-  const cssConf = {
-    frameId,
-    code: Settings.get("userDefinedLinkHintCss"),
-    runAt: "document_start"
-  };
-  return chrome.tabs.insertCSS(tabId, cssConf, () => chrome.runtime.lastError);
 });
 
 // Symbolic names for the three browser-action icons.
