@@ -60,14 +60,7 @@ async function buildStorePackage() {
   await shell("mkdir", ["-p", `dist/${PROJECT_NAME}`, "dist/chrome-canary", "dist/chrome-store", "dist/firefox"]);
   await shell("rsync", rsyncOptions);
 
-  writeDistManifest(Object.assign({}, manifestContents, {
-    // Chrome considers this key invalid in manifest.json, so we add it only during the Firefox build phase.
-    browser_specific_settings: {
-      gecko: {
-        strict_min_version: "62.0"
-      },
-    },
-  }));
+  writeDistManifest(manifestContents);
   await shell("bash", ["-c", `${zipCommand} ../firefox/${PROJECT_NAME}-firefox-${vimiumVersion}.zip .`]);
 
   // Build the Chrome Store package.
