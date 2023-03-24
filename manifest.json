@@ -1,54 +1,33 @@
 {
   "manifest_version": 2,
-  "name": "Vimium-lite",
-  "version": "2.0.1",
+  "name": "lightspeed.ff",
+  "version": "0.0.1",
   "description": "lightspeed.nvim, but for the browser",
-  "icons": {  "16": "icons/icon16.png",
-              "48": "icons/icon48.png",
-             "128": "icons/icon128.png" },
-  "minimum_chrome_version": "69.0",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "applications": {
     "gecko": {
-      "id": "nvp-permissionless@vimium.github"
+      "id": "nvp-permissionless@lightspeed.ff"
     }
   },
   "background": {
-    "scripts": [
-      "lib/utils.js",
-      "lib/settings.js",
-      "background_scripts/bg_utils.js",
-      "background_scripts/commands.js",
-      "background_scripts/exclusions.js",
-      "background_scripts/marks.js",
-      "background_scripts/main.js"
-    ]
+    "scripts": ["background_scripts/index.js"]
   },
   "options_ui": {
     "page": "pages/options.html",
     "chrome_style": false,
     "open_in_tab": true
   },
-  "permissions": [
-    "storage"
-  ],
+  "permissions": [],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["lib/utils.js",
-             "lib/keyboard_utils.js",
-             "lib/dom_utils.js",
-             "lib/rect.js",
-             "lib/settings.js",
-             "content_scripts/mode.js",
-             "content_scripts/ui_component.js",
-             "content_scripts/link_hints.js",
-             "content_scripts/scroller.js",
-             "content_scripts/marks.js",
-             "content_scripts/hud.js",
-             "content_scripts/vimium_frontend.js"
-            ],
+      "js": ["content_scripts/index.js"],
       "css": ["content_scripts/vimium.css"],
-      "run_at": "document_start",
+      "run_at": "document_end",
       "all_frames": true,
       "match_about_blank": true
     }

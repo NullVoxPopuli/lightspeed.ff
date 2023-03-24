@@ -45,27 +45,6 @@ Navigating the current page:
     gf      cycle forward to the next frame
     gF      focus the main/top frame
 
-Navigating to new pages:
-
-    o       Open URL, bookmark, or history entry
-    O       Open URL, bookmark, history entry in a new tab
-    b       Open bookmark
-    B       Open bookmark in a new tab
-
-Using find:
-
-    /       enter find mode
-              -- type your search query and hit enter to search, or Esc to cancel
-    n       cycle forward to the next find match
-    N       cycle backward to the previous find match
-
-For advanced usage, see [regular expressions](https://github.com/philc/vimium/wiki/Find-Mode) on the wiki.
-
-Navigating your history:
-
-    H       go back in history
-    L       go forward in history
-
 Manipulating tabs:
 
     J, gT   go one tab left
@@ -80,13 +59,6 @@ Manipulating tabs:
     T       search through your open tabs
     W       move current tab to new window
     <a-p>   pin/unpin current tab
-
-Using marks:
-
-    ma, mA  set local mark "a" (global mark "A")
-    `a, `A  jump to local mark "a" (global mark "A")
-    ``      jump back to the position before the previous jump
-              -- that is, before the previous gg, G, n, N, / or `a
 
 Additional advanced browsing commands:
 
