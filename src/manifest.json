@@ -13,6 +13,13 @@
     }
   },
   "background": {
-    "scripts": ["background_scripts/index.js"]
-  }
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["contentScript.js"],
+      "run_at": "document_start"
+    }
+  ]
 }

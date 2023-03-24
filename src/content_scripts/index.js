@@ -15,3 +15,9 @@ window.addEventListener("keypress", () => {
     console.log("Sent key value" + response);
   });
 });
+document.addEventListener("keypress", () => {
+  console.log("hi");
+  chrome.runtime.sendMessage(null, keyvalue, (response) => {
+    console.log("Sent key value" + response);
+  });
+});
