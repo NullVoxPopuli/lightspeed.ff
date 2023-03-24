@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "volta": {
+    "node": "18.15.0"
+  },
+  "scripts": {
+    "build": "swc ./src/ --out-dir dist --copy-files",
+    "start": "pnpm build --watch"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.42",
+    "@types/firefox-webext-browser": "^111.0.0",
+    "browserslist": "^4.21.5",
+    "chokidar": "^3.5.3",
+    "prettier": "^2.8.6",
+    "typescript": "^5.0.2"
+  }
+}

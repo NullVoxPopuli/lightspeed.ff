@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    // Format
+    "module": "commonjs",
+    "target": "esnext",
+    "moduleResolution": "node",
+
+    // Compatibility
+    "esModuleInterop": true,
+
+    // Correctness
+    "strict": true,
+    "alwaysStrict": true
+  }
+}
