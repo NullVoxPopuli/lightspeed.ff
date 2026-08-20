@@ -1,5 +1,6 @@
 {
   "private": true,
+  "description": "project setup for building a browser extension in 'src'",
   "volta": {
     "node": ">=24"
   },
