@@ -9,11 +9,16 @@
  * nothing about the page ever leaves the tab.
  */
 
-// Home-row-first characters, ordered so the shortest hints are the easiest to
-// type. Kept short: every extra character doubles the number of one-key hints.
-const HINT_CHARS = "sadfjklewcmpgh";
 
-// The key that opens hint mode.
+/**
+ * Dvorak key-order
+ * - home-row outer
+ * - home-row inner
+ * - top row left-to-right
+ * - bottom row left-to-right
+ */
+const HINT_CHARS = "aoeuhtnsid',.pyfgcrl;qjkxbmwvz";
+
 const ACTIVATION_KEY = "f";
 
 // Rects thinner than this in either dimension aren't worth hinting; they're
@@ -24,6 +29,7 @@ const MIN_RECT_SIZE = 3;
 const INTERACTIVE_ROLES = new Set([
   "button",
   "checkbox",
+  "combobox",
   "link",
   "menuitem",
   "menuitemcheckbox",
@@ -290,20 +296,21 @@ const MARKER_STYLES = `
   }
   .marker {
     position: fixed;
-    background: linear-gradient(to bottom, #fff785 0%, #ffc542 100%);
-    border: 1px solid #c38a22;
+    background: linear-gradient(to bottom, #4c00ba 0%, #8300a8 100%);
+    border: 1px solid #8200b1;
     border-radius: 3px;
-    box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.9);
     box-sizing: border-box;
-    color: #302505;
+    color: #fbfbfb;
     font: bold 11px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
     letter-spacing: 0.5px;
     padding: 3px 4px 2px;
     text-transform: uppercase;
     white-space: nowrap;
+    z-index: 10;
   }
   .typed {
-    color: #d4b11d;
+    color: #ebebff;
   }
 `;
 
