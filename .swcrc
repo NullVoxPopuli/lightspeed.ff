@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/swcrc",
-  "minify": false
+  "minify": false,
   "env": {
     "targets": {
       "firefox": "106"
@@ -9,7 +9,6 @@
     "coreJs": "3.22"
   },
   "jsc": {
-    "target": "es2021",
     "parser": {
       "syntax": "ecmascript",
       "jsx": false,
