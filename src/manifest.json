@@ -1,37 +1,29 @@
 {
   "manifest_version": 3,
   "name": "lightspeed.ff",
-  "version": "0.0.1",
-  "description": "lightspeed.nvim, but for the browser",
-  "permissions": ["activeTab", "scripting"],
+  "version": "3.0.0",
+  "description": "Keyboard access to every interactable element on a page",
   "icons": {
-    "128": "icons/falling-star-icon.png"
+    "48": "icons/falling-star-48.png",
+    "128": "icons/falling-star-128.png"
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "nvp-permissionless@lightspeed.ff"
+      "id": "nvp-permissionless@lightspeed.ff",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
     }
-  },
-  "background": {
-    "service_worker": "background/index.js",
-    "type": "module"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>", "*://*"],
+      "matches": ["<all_urls>"],
       "js": ["content/index.js"],
-      "css": ["content/styles.css"],
       "run_at": "document_start"
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "content/index.js",
-        "content/styles.css",
-        "icons/falling-star-icon.png"
-      ],
-      "matches": []
     }
   ]
 }
