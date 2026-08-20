@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "description": "project setup for building a browser extension in 'src'",
+  "volta": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@11.22.0",
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "pnpm dlx web-ext lint --source-dir=src",
+    "package": "mkdir -p artifacts && rm -f artifacts/lightspeed.ff.zip && cd src && zip -qr -FS ../artifacts/lightspeed.ff.zip . -x '.*'"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6"
+  }
+}
