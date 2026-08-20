@@ -5,13 +5,11 @@
   },
   "packageManager": "pnpm@11.22.0",
   "scripts": {
-    "build": "swc ./src/ --out-dir dist --copy-files --strip-leading-paths",
-    "start": "pnpm build --watch"
+    "format": "prettier --write .",
+    "lint": "pnpm dlx web-ext lint --source-dir=src",
+    "package": "mkdir -p artifacts && rm -f artifacts/lightspeed.ff.zip && cd src && zip -qr -FS ../artifacts/lightspeed.ff.zip . -x '.*'"
   },
   "devDependencies": {
-    "@swc/cli": "^0.8.1",
-    "@swc/core": "^1.3.42",
-    "chokidar": "^5.0.0",
     "prettier": "^3.9.6"
   }
 }
