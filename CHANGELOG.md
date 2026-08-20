@@ -10,5 +10,6 @@
 Initial release / fork of the original vimium.
 
 Goals:
- - reduced permissions (also means reduced functionality)
- - improved visuals
+
+- reduced permissions (also means reduced functionality)
+- improved visuals

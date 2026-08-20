@@ -12,9 +12,7 @@
       "id": "nvp-permissionless@lightspeed.ff",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
-        "required": [
-          "none"
-        ]
+        "required": ["none"]
       }
     },
     "gecko_android": {
@@ -23,12 +21,8 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content/index.js"
-      ],
+      "matches": ["<all_urls>"],
+      "js": ["content/index.js"],
       "run_at": "document_start"
     }
   ]

@@ -9,7 +9,6 @@
  * nothing about the page ever leaves the tab.
  */
 
-
 /**
  * Dvorak key-order
  * - home-row outer
@@ -115,7 +114,14 @@ function cropToViewport(rect) {
 
   if (right - left < MIN_RECT_SIZE || bottom - top < MIN_RECT_SIZE) return null;
 
-  return { top, left, right, bottom, width: right - left, height: bottom - top };
+  return {
+    top,
+    left,
+    right,
+    bottom,
+    width: right - left,
+    height: bottom - top,
+  };
 }
 
 /**
@@ -426,7 +432,9 @@ const HintMode = {
     }
 
     this.typed = this.typed.slice(0, -1);
-    this.update(this.markers.filter((hint) => hint.hint.startsWith(this.typed)));
+    this.update(
+      this.markers.filter((hint) => hint.hint.startsWith(this.typed)),
+    );
   },
 
   /**
