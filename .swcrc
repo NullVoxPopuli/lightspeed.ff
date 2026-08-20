@@ -4,9 +4,7 @@
   "env": {
     "targets": {
       "firefox": "106"
-    },
-    "mode": "entry",
-    "coreJs": "3.22"
+    }
   },
   "jsc": {
     "parser": {

@@ -2,8 +2,7 @@
   "manifest_version": 3,
   "name": "lightspeed.ff",
   "version": "0.0.1",
-  "description": "lightspeed.nvim, but for the browser",
-  "permissions": ["activeTab", "scripting"],
+  "description": "Keyboard access to every interactable element on a page",
   "icons": {
     "128": "icons/falling-star-icon.png"
   },
@@ -12,26 +11,11 @@
       "id": "nvp-permissionless@lightspeed.ff"
     }
   },
-  "background": {
-    "service_worker": "background/index.js",
-    "type": "module"
-  },
   "content_scripts": [
     {
-      "matches": ["<all_urls>", "*://*"],
+      "matches": ["<all_urls>"],
       "js": ["content/index.js"],
-      "css": ["content/styles.css"],
       "run_at": "document_start"
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "content/index.js",
-        "content/styles.css",
-        "icons/falling-star-icon.png"
-      ],
-      "matches": []
     }
   ]
 }
