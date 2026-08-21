@@ -313,7 +313,7 @@ const MARKER_STYLES = `
     padding: 3px 4px 2px;
     text-transform: uppercase;
     white-space: nowrap;
-    z-index: 10;
+    z-index: 100;
   }
   .typed {
     color: #ebebff;
