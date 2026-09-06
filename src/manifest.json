@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "lightspeed.ff",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Keyboard access to every interactable element on a page",
   "icons": {
     "48": "icons/falling-star-48.png",

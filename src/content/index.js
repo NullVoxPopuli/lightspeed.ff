@@ -4,6 +4,9 @@
  * Press `f` to label each visible interactable with a short hint, then type the
  * hint to activate it. Escape cancels, Backspace un-types a character.
  *
+ * `gg` and `G` jump to the top and bottom of the page, as in vim. Every command
+ * flashes its name in a badge at the bottom-right corner of the viewport.
+ *
  * Everything here runs in the content script. The extension holds no
  * permissions, has no background page, and never calls an extension API — so
  * nothing about the page ever leaves the tab.
@@ -17,8 +20,6 @@
  * - bottom row left-to-right
  */
 const HINT_CHARS = "aoeuhtnsid',.pyfgcrl;qjkxbmwvz";
-
-const ACTIVATION_KEY = "f";
 
 // Rects thinner than this in either dimension aren't worth hinting; they're
 // almost always spacers or collapsed containers rather than real targets.
@@ -320,6 +321,81 @@ const MARKER_STYLES = `
   }
 `;
 
+const BADGE_STYLES = `
+  :host {
+    all: initial;
+  }
+  .badge {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    background: linear-gradient(to bottom, #4c00ba 0%, #8300a8 100%);
+    border: 1px solid #8200b1;
+    border-radius: 4px;
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.9);
+    box-sizing: border-box;
+    color: #fbfbfb;
+    font: bold 12px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    letter-spacing: 0.5px;
+    padding: 6px 8px 5px;
+    pointer-events: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 2147483647;
+  }
+`;
+
+// How long a command's badge stays on screen once the command has finished.
+const BADGE_DURATION = 1000;
+
+/**
+ * Badge: names the command just run, in the bottom-right corner.
+ *
+ * Same closed-shadow-root isolation as the hint markers.
+ */
+const Badge = {
+  host: null,
+  label: null,
+  timer: null,
+
+  /**
+   * Show `text`. With `hold`, it stays until `hide()` is called; otherwise it
+   * fades after `BADGE_DURATION`.
+   */
+  show(text, { hold = false } = {}) {
+    clearTimeout(this.timer);
+    this.timer = null;
+
+    if (!this.host) {
+      this.host = document.createElement("div");
+      this.host.style.cssText = "all: initial; position: static;";
+      const shadow = this.host.attachShadow({ mode: "closed" });
+
+      const style = document.createElement("style");
+      style.textContent = BADGE_STYLES;
+
+      this.label = document.createElement("div");
+      this.label.className = "badge";
+
+      shadow.append(style, this.label);
+    }
+
+    this.label.textContent = text;
+    // Re-append so the badge sits above anything the page added since.
+    document.documentElement.append(this.host);
+
+    if (!hold) {
+      this.timer = setTimeout(() => this.hide(), BADGE_DURATION);
+    }
+  },
+
+  hide() {
+    clearTimeout(this.timer);
+    this.timer = null;
+    this.host?.remove();
+  },
+};
+
 /**
  * Hint mode: renders markers, consumes keystrokes, activates the match.
  *
@@ -332,9 +408,13 @@ const HintMode = {
   markers: [],
   typed: "",
 
+  /**
+   * Returns whether hint mode actually started; a page with nothing to
+   * activate has nothing to show.
+   */
   enter() {
     const targets = findTargets();
-    if (targets.length === 0) return;
+    if (targets.length === 0) return false;
 
     this.active = true;
     this.typed = "";
@@ -369,10 +449,14 @@ const HintMode = {
     // strands them over the wrong elements. Bail rather than show a lie.
     window.addEventListener("scroll", onViewportChange, true);
     window.addEventListener("resize", onViewportChange, true);
+
+    return true;
   },
 
   exit() {
     if (!this.active) return;
+
+    Badge.hide();
 
     window.removeEventListener("keydown", onHintKeyDown, true);
     window.removeEventListener("scroll", onViewportChange, true);
@@ -476,25 +560,148 @@ function onHintKeyDown(event) {
   }
 }
 
+// ARIA roles for widgets that handle typing themselves, even when the element
+// isn't a native text field or contenteditable (custom editors, comboboxes).
+const TYPING_ROLES = new Set(["combobox", "searchbox", "textbox"]);
+
+/**
+ * Does keyboard input belong to this element rather than to the page?
+ */
+function consumesTyping(element) {
+  if (!(element instanceof Element)) return false;
+  if (isTextEntry(element)) return true;
+  if (element.tagName.toLowerCase() === "select") return true;
+
+  const role = element.getAttribute("role");
+  if (role && TYPING_ROLES.has(role)) return true;
+
+  // Custom editors often keep focus on a wrapper and mark the editable
+  // surface on an ancestor.
+  return element.closest("[contenteditable], [role='textbox']") !== null;
+}
+
+/**
+ * The focused element, descending through open shadow roots.
+ *
+ * `document.activeElement` stops at a shadow host, so an <input> inside a web
+ * component would otherwise look like a plain custom element.
+ */
+function deepActiveElement() {
+  let active = document.activeElement;
+  while (active?.shadowRoot?.activeElement) {
+    active = active.shadowRoot.activeElement;
+  }
+  return active;
+}
+
 /**
  * Is the user typing into something, rather than at the page?
  */
-function isTyping() {
-  const active = document.activeElement;
-  if (!active) return false;
-  return isTextEntry(active) || active.tagName.toLowerCase() === "select";
+function isTyping(event) {
+  // Mid-IME composition, every key belongs to the input method.
+  if (event.isComposing) return true;
+
+  // The event target is the most direct signal; the deep active element
+  // covers the cases where the target got retargeted to a shadow host.
+  const target = event.composedPath()[0];
+  return consumesTyping(target) || consumesTyping(deepActiveElement());
 }
+
+/**
+ * Scroll the document to its top or bottom edge, instantly, as vim does.
+ */
+function scrollToEdge(edge) {
+  const scroller = document.scrollingElement ?? document.documentElement;
+  const top = edge === "top" ? 0 : scroller.scrollHeight;
+  window.scrollTo({ top, left: window.scrollX, behavior: "instant" });
+}
+
+/**
+ * Page-level commands, keyed by the key sequence that triggers them (as
+ * reported by `event.key`, so `G` means shift+g).
+ *
+ * `run` returns false when the command had nothing to do, in which case no
+ * badge is shown.
+ */
+const COMMANDS = {
+  f: {
+    label: "Jump",
+    hold: true,
+    run: () => HintMode.enter(),
+  },
+  gg: {
+    label: "Top of Page",
+    run: () => scrollToEdge("top"),
+  },
+  G: {
+    label: "Bottom of Page",
+    run: () => scrollToEdge("bottom"),
+  },
+};
+
+// A multi-key sequence must be completed within this window, like vim's
+// `timeoutlen`.
+const SEQUENCE_TIMEOUT = 1000;
+
+/**
+ * Key-sequence dispatcher: buffers prefix keys (`g` of `gg`) and runs a
+ * command once its full sequence has been typed.
+ *
+ * Prefix keys are left for the page to see — plenty of sites bind their own
+ * `g`-prefixed shortcuts — and only a completed command is swallowed.
+ */
+const Sequence = {
+  pending: "",
+  timer: null,
+
+  reset() {
+    clearTimeout(this.timer);
+    this.timer = null;
+    this.pending = "";
+  },
+
+  /**
+   * Feed one key. Returns the matched command, or null.
+   */
+  feed(key) {
+    const sequence = this.pending + key;
+    this.reset();
+
+    if (sequence in COMMANDS) return COMMANDS[sequence];
+
+    const isPrefix = Object.keys(COMMANDS).some(
+      (name) => name.length > sequence.length && name.startsWith(sequence),
+    );
+    if (isPrefix) {
+      this.pending = sequence;
+      this.timer = setTimeout(() => this.reset(), SEQUENCE_TIMEOUT);
+    }
+
+    return null;
+  },
+};
 
 function onKeyDown(event) {
   if (HintMode.active) return;
   if (event.repeat) return;
-  if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
-  if (event.key !== ACTIVATION_KEY) return;
-  if (isTyping()) return;
+  if (event.ctrlKey || event.altKey || event.metaKey) return;
+  // Modifier and navigation keys aren't part of any sequence; ignore them
+  // without disturbing a pending prefix (shift is pressed on the way to `G`).
+  if (event.key.length !== 1) return;
+
+  if (isTyping(event)) {
+    Sequence.reset();
+    return;
+  }
+
+  const command = Sequence.feed(event.key);
+  if (!command) return;
 
   event.preventDefault();
   event.stopImmediatePropagation();
-  HintMode.enter();
+
+  if (command.run() === false) return;
+  Badge.show(command.label, { hold: command.hold });
 }
 
 window.addEventListener("keydown", onKeyDown, true);
